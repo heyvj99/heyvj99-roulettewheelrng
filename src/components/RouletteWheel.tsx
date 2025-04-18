@@ -50,34 +50,78 @@ const RouletteWheel = () => {
   const [rotation, setRotation] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
   const [result, setResult] = useState<number | string | null>(null);
+  const [knobPosition, setKnobPosition] = useState(0);
   const wheelRef = useRef<HTMLDivElement>(null);
-  const dragStartRef = useRef<number | null>(null);
+  const spinnerRef = useRef<HTMLDivElement>(null);
+  const dragStartRef = useRef<{ x: number; time: number } | null>(null);
   const lastRotationRef = useRef(rotation);
 
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
     if (isSpinning) return;
     const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    dragStartRef.current = clientX;
+    dragStartRef.current = { x: clientX, time: performance.now() };
     lastRotationRef.current = rotation;
+
+    // Add event listeners to handle drag outside the spinner
+    document.addEventListener('mousemove', handleDragMove as any);
+    document.addEventListener('mouseup', handleDragEnd as any);
+    document.addEventListener('touchmove', handleDragMove as any);
+    document.addEventListener('touchend', handleDragEnd as any);
   };
 
   const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!dragStartRef.current || isSpinning) return;
+    if (!dragStartRef.current || isSpinning || !spinnerRef.current) return;
     const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const delta = clientX - dragStartRef.current;
-    const newRotation = lastRotationRef.current + delta * 0.5;
-    setRotation(newRotation);
+    const spinnerRect = spinnerRef.current.getBoundingClientRect();
+    const spinnerWidth = spinnerRect.width;
+    
+    // Calculate position as percentage (0 to 100)
+    const newPosition = Math.max(0, Math.min(100, 
+      ((clientX - spinnerRect.left) / spinnerWidth) * 100
+    ));
+    
+    setKnobPosition(newPosition);
   };
 
-  const handleDragEnd = () => {
+  const handleDragEnd = (e: React.MouseEvent | React.TouchEvent) => {
     if (!dragStartRef.current || isSpinning) return;
+    
+    // Remove event listeners
+    document.removeEventListener('mousemove', handleDragMove as any);
+    document.removeEventListener('mouseup', handleDragEnd as any);
+    document.removeEventListener('touchmove', handleDragMove as any);
+    document.removeEventListener('touchend', handleDragEnd as any);
+
+    // Calculate velocity based on drag distance and time
+    const endX = 'touches' in e ? e.changedTouches[0].clientX : e.clientX;
+    const dragDistance = endX - dragStartRef.current.x;
+    const dragTime = performance.now() - dragStartRef.current.time;
+    const velocity = Math.abs(dragDistance / dragTime); // pixels per millisecond
+    
+    // Get spinner width to calculate drag percentage
+    const spinnerWidth = spinnerRef.current?.getBoundingClientRect().width || 400;
+    const dragPercentage = Math.abs(dragDistance) / spinnerWidth;
+
+    // Reset knob position immediately
+    setKnobPosition(0);
+    
     setIsSpinning(true);
     
-    const spinRotations = Math.random() * 8 + 12; // 12-20 rotations
-    const finalRotation = rotation + (spinRotations * 360);
-    
+    // Convert drag percentage to rotations
+    // For small drags (< 25% of width), do partial rotations
+    // For full width drag, do many rotations
+    const minRotation = 0.25; // quarter turn minimum
+    const maxRotations = 20; // maximum number of rotations for full drag
+    const rotations = dragPercentage < 0.25 
+      ? dragPercentage * 2 // less than quarter width = partial rotation
+      : minRotation + (dragPercentage * maxRotations);
+      
+    const finalRotation = rotation + (rotations * 360);
     const startTime = performance.now();
-    const duration = 6000; // 6 seconds for more realistic spin
+    // Duration also scales with drag distance
+    const minDuration = 1000; // minimum spin time
+    const maxDuration = 6000; // maximum spin time
+    const duration = minDuration + (dragPercentage * (maxDuration - minDuration));
 
     const animate = () => {
       const now = performance.now();
@@ -130,16 +174,19 @@ const RouletteWheel = () => {
       </div>
       <div className="ball" />
       <div
-        className="spinner"
-        onMouseDown={handleDragStart}
-        onMouseMove={handleDragMove}
-        onMouseUp={handleDragEnd}
-        onMouseLeave={handleDragEnd}
-        onTouchStart={handleDragStart}
-        onTouchMove={handleDragMove}
-        onTouchEnd={handleDragEnd}
+        ref={spinnerRef}
+        className={`spinner ${isSpinning ? 'disabled' : ''}`}
+        onMouseDown={isSpinning ? undefined : handleDragStart}
+        onTouchStart={isSpinning ? undefined : handleDragStart}
       >
-        Drag and release to spin!
+        <div 
+          className="spinner-track" 
+          style={{ width: `${knobPosition}%` }} 
+        />
+        <div 
+          className="spinner-knob"
+          style={{ left: `${knobPosition}%` }}
+        />
       </div>
       {result !== null && (
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl font-bold text-white bg-black bg-opacity-50 px-4 py-2 rounded">
