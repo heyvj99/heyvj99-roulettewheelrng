@@ -50,11 +50,22 @@ const RouletteWheel = () => {
   const [rotation, setRotation] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
   const [result, setResult] = useState<number | string | null>(null);
+  const [winningIndex, setWinningIndex] = useState<number | null>(null);
   const [knobPosition, setKnobPosition] = useState(0);
   const wheelRef = useRef<HTMLDivElement>(null);
   const spinnerRef = useRef<HTMLDivElement>(null);
   const dragStartRef = useRef<{ x: number; time: number } | null>(null);
   const lastRotationRef = useRef(rotation);
+
+  // Clear winning highlight after animation
+  useEffect(() => {
+    if (winningIndex !== null) {
+      const timer = setTimeout(() => {
+        setWinningIndex(null);
+      }, 800); // Match animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [winningIndex]);
 
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
     if (isSpinning) return;
@@ -81,6 +92,40 @@ const RouletteWheel = () => {
     ));
     
     setKnobPosition(newPosition);
+  };
+
+  const calculateWinningPocket = (currentRotation: number) => {
+    // Normalize the rotation to 0-360 range
+    const normalizedRotation = ((currentRotation % 360) + 180) % 360;
+    const pocketAngle = 360 / POCKETS.length;
+    
+    // Since the ball is at the top (0 degrees), and the wheel rotates clockwise,
+    // we need to adjust our calculation to find the pocket that's at the top
+    const adjustedRotation = (360 - normalizedRotation) % 360;
+    
+    // Calculate the raw index
+    const rawIndex = adjustedRotation / pocketAngle;
+    
+    
+    // Get the two closest pocket indices
+    const lowerIndex = Math.floor(rawIndex) % POCKETS.length;
+    const upperIndex = Math.ceil(rawIndex) % POCKETS.length;
+    
+    // Calculate how close we are to each pocket
+    const fraction = rawIndex - Math.floor(rawIndex);
+    
+    // Snap to the closer pocket
+    //Though we are not actually snapping but its important 
+    // to calculate the right pocket to highlight
+    const finalIndex = fraction < 0.5 ? lowerIndex : upperIndex;
+    
+    
+    // Adjust the rotation to snap to the exact pocket position
+    const snappedRotation = currentRotation + 
+      (fraction < 0.5 ? -fraction : (1 - fraction)) * pocketAngle;
+    // setRotation(snappedRotation);
+    
+    return finalIndex;
   };
 
   const handleDragEnd = (e: React.MouseEvent | React.TouchEvent) => {
@@ -141,9 +186,9 @@ const RouletteWheel = () => {
         requestAnimationFrame(animate);
       } else {
         setIsSpinning(false);
-        const normalizedRotation = ((currentRotation % 360) + 360) % 360;
-        const pocketIndex = Math.floor(normalizedRotation / (360 / POCKETS.length));
-        setResult(POCKETS[pocketIndex].number);
+        const winningPocketIndex = calculateWinningPocket(currentRotation);
+        setWinningIndex(winningPocketIndex);
+        setResult(POCKETS[winningPocketIndex].number);
       }
     };
 
@@ -161,7 +206,7 @@ const RouletteWheel = () => {
         {POCKETS.map((pocket, index) => (
           <div
             key={pocket.number}
-            className={`pocket ${pocket.color}`}
+            className={`pocket ${pocket.color} ${index === winningIndex ? 'winner' : ''}`}
             style={{
               transform: `rotate(${index * (360 / POCKETS.length)}deg)`,
             }}
