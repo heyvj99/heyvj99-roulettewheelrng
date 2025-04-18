@@ -9,7 +9,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black flex flex-col items-center justify-center p-4">
-      <h1 className="text-4xl font-bold text-yellow-500 mb-8 text-center">
+      <h1 className="casino-title text-4xl font-bold text-yellow-500 mb-8 text-center">
         Casino Roulette
       </h1>
       <div className="relative">
