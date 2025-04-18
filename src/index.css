@@ -3,7 +3,7 @@
 
 :root {
   --wheel-size: min(80vw, 600px);
-  --pocket-count: 37;
+  --pocket-count: 38;
   --pocket-angle: calc(360deg / var(--pocket-count));
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -75,10 +75,14 @@ button:focus-visible {
 
 @layer utilities {
   .wheel-container {
-    width: 400px;
-    height: 400px;
+    width: 600px;
+    height: 600px;
     margin: 2rem auto;
     position: relative;
+    background: #1a1a1a;
+    border-radius: 50%;
+    padding: 20px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
   }
 
   .wheel {
@@ -86,9 +90,29 @@ button:focus-visible {
     height: 100%;
     border-radius: 50%;
     position: relative;
+    background: #1a1a1a;
     overflow: hidden;
-    border: 8px solid #ffd700;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    border: 15px solid #1a1a1a;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.6), 0 0 0 15px #c0c0c0;
+  }
+
+  .center-circle {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1a1a1a;
+    border-radius: 50%;
+    border: 8px solid #c0c0c0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
   }
 
   .pocket {
@@ -96,65 +120,94 @@ button:focus-visible {
     top: 50%;
     left: 50%;
     width: 0;
-    height: 0;
-    transform-origin: 0 0;
+    height: 50%;
+    transform-origin: 50% 0;
   }
 
-  .pocket::before {
-    content: "";
+  .pocket-segment {
     position: absolute;
-    width: 200px; /* Half of wheel width */
-    height: 20px; /* Adjust for pocket thickness */
-    background-color: currentColor;
-    transform-origin: left center;
-    transform: rotate(-10deg); /* Half of the pocket angle */
+    top: 0;
+    left: -25px;
+    width: 50px;
+    height: 100%;
+    background: currentColor;
+    clip-path: polygon(50% 0%, 100% 98%, 0% 98%);
+    transform-origin: center top;
+    transform: rotate(0.1deg);
   }
 
-  .pocket::after {
-    content: attr(data-number);
+  .pocket-number {
     position: absolute;
-    left: 30px;
-    top: -10px;
+    top: 85%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(180deg);
     color: white;
     font-weight: bold;
-    font-size: 14px;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+    font-size: 16px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    z-index: 2;
+    white-space: nowrap;
   }
 
-  .pocket.red::before {
+  .pocket.red .pocket-segment {
     background-color: #dc2626;
   }
 
-  .pocket.black::before {
+  .pocket.black .pocket-segment {
     background-color: #171717;
   }
 
-  .pocket.green::before {
+  .pocket.green .pocket-segment {
     background-color: #15803d;
   }
 
   .ball {
     position: absolute;
-    width: 15px;
-    height: 15px;
-    background: white;
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle at 30% 30%, #ffffff, #d4d4d4);
     border-radius: 50%;
-    top: 50%;
+    top: 10%;
     left: 50%;
     transform: translate(-50%, -50%);
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    z-index: 10;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5),
+      inset -2px -2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 4;
   }
 
   .spinner {
     position: absolute;
-    bottom: -40px;
+    bottom: -50px;
     left: 50%;
     transform: translateX(-50%);
     width: 80%;
     height: 20px;
-    background: linear-gradient(90deg, #ffd700, #c0c0c0);
+    background: linear-gradient(90deg, #c0c0c0, #808080);
     border-radius: 10px;
     cursor: pointer;
+    user-select: none;
+    touch-action: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    line-height: 20px;
+    color: #1a1a1a;
+    font-weight: bold;
+  }
+
+  /* Outer decorative ring */
+  .wheel::after {
+    content: "";
+    position: absolute;
+    width: calc(100% + 30px);
+    height: calc(100% + 30px);
+    top: -15px;
+    left: -15px;
+    border-radius: 50%;
+    background: repeating-conic-gradient(
+      from 0deg,
+      #c0c0c0 0deg 5deg,
+      #1a1a1a 5deg 10deg
+    );
+    z-index: -1;
   }
 }
