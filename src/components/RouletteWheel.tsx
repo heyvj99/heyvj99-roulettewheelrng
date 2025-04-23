@@ -121,8 +121,8 @@ const RouletteWheel = () => {
     
     
     // Adjust the rotation to snap to the exact pocket position
-    const snappedRotation = currentRotation + 
-      (fraction < 0.5 ? -fraction : (1 - fraction)) * pocketAngle;
+   // const snappedRotation = currentRotation + 
+   //   (fraction < 0.5 ? -fraction : (1 - fraction)) * pocketAngle;
     // setRotation(snappedRotation);
     
     return finalIndex;
@@ -140,8 +140,8 @@ const RouletteWheel = () => {
     // Calculate velocity based on drag distance and time
     const endX = 'touches' in e ? e.changedTouches[0].clientX : e.clientX;
     const dragDistance = endX - dragStartRef.current.x;
-    const dragTime = performance.now() - dragStartRef.current.time;
-    const velocity = Math.abs(dragDistance / dragTime); // pixels per millisecond
+    //const dragTime = performance.now() - dragStartRef.current.time;
+    //const velocity = Math.abs(dragDistance / dragTime); // pixels per millisecond
     
     // Get spinner width to calculate drag percentage
     const spinnerWidth = spinnerRef.current?.getBoundingClientRect().width || 400;
