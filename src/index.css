@@ -2,7 +2,7 @@
 @import "tailwindcss/utilities";
 
 :root {
-  --wheel-size: min(50vw, 400px);
+  --wheel-size: min(50vw, 450px);
   --pocket-count: 38;
   --pocket-angle: calc(360deg / var(--pocket-count));
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -19,6 +19,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  max-height: 100vh;
+  overflow: hidden;
 }
 
 a {
@@ -101,6 +103,7 @@ button:focus-visible {
     border-radius: 50%;
     padding: 20px;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+    overflow: visible;
   }
 
   .wheel {
