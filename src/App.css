@@ -40,12 +40,3 @@
 .read-the-docs {
   color: #888;
 }
-
-.center-result {
-  color: #ffd700;
-  font-size: 3rem;
-  font-weight: medium;
-  text-shadow: 0 0 5px #ffd700, 0 0 20px #b8860b;
-  letter-spacing: 0.05em;
-  text-align: center;
-}
