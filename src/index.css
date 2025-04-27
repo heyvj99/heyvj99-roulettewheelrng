@@ -2,7 +2,7 @@
 @import "tailwindcss/utilities";
 
 :root {
-  --wheel-size: min(50vw, 450px);
+  --wheel-size: min(50vw, 400px);
   --pocket-count: 38;
   --pocket-angle: calc(360deg / var(--pocket-count));
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;

@@ -230,7 +230,7 @@ const RouletteWheel = () => {
         <div className="spinner-knob" style={{ left: `${knobPosition}%` }} />
       </div>
       {result !== null && (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl font-bold text-white bg-black bg-opacity-50 px-4 py-2 rounded">
+        <div className="center-result absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black px-4 py-2 rounded">
           {result}
         </div>
       )}
