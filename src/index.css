@@ -2,7 +2,7 @@
 @import "tailwindcss/utilities";
 
 :root {
-  --wheel-size: min(80vw, 600px);
+  --wheel-size: min(50vw, 450px);
   --pocket-count: 38;
   --pocket-angle: calc(360deg / var(--pocket-count));
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -12,6 +12,8 @@
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background: linear-gradient(135deg, #1a1a2e 0%, #455a94 100%);
+  background-repeat: no-repeat;
+  /* background-size: cover; */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -32,7 +34,7 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
+  width: 100vw;
   min-height: 100vh;
   background: radial-gradient(
       circle at 10% 20%,
@@ -159,7 +161,7 @@ button:focus-visible {
     transform: translate(-50%, -50%) rotate(180deg);
     color: white;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 22px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     z-index: 2;
     white-space: nowrap;
@@ -243,9 +245,9 @@ button:focus-visible {
 
   .spinner {
     position: absolute;
-    bottom: -60px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: -340px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
     width: 80%;
     height: 12px;
     background: linear-gradient(to right, #1a1a2e, #2a2a3a);
