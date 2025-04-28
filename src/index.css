@@ -95,25 +95,29 @@ button:focus-visible {
 
 @layer utilities {
   @media (max-width: 800px) {
-    .wheel-container {
+    /* .wheel-container {
       width: 100%;
       aspect-ratio: 1/1;
-    }
+    } */
 
     .spinner {
-      left: -70%;
+      left: -55%;
     }
 
     .center-circle {
-      font-size: 1rem;
+      font-size: 1.5rem;
+    }
+
+    .pocket-number {
+      font-size: 14px;
     }
   }
 
   @media (min-width: 800px) {
-    .wheel-container {
+    /* .wheel-container {
       width: 65%;
       aspect-ratio: 1/1;
-    }
+    } */
     .spinner {
       left: -70%;
     }
@@ -121,10 +125,14 @@ button:focus-visible {
     .center-circle {
       font-size: 2.5rem;
     }
+
+    .pocket-number {
+      font-size: 20px;
+    }
   }
 
   .wheel-container {
-    aspect-ratio: 1;
+    /* aspect-ratio: 1; */
     margin: 2rem auto;
     position: relative;
     background: #1a1a1a;
@@ -132,6 +140,9 @@ button:focus-visible {
     padding: 20px;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
     overflow: visible;
+    --wheel-size: min(65vw, 600px); /* or whatever you use for wheel size */
+    width: var(--wheel-size);
+    aspect-ratio: 1/1;
   }
 
   .wheel {
@@ -170,22 +181,25 @@ button:focus-visible {
   .pocket {
     position: absolute;
     top: 50%;
-    left: 50%;
-    width: 0;
+    left: 0%;
+    width: 100%;
     height: 50%;
-    transform-origin: 50% 0;
+    transform-origin: 50% 0%;
   }
 
   .pocket-segment {
     position: absolute;
     top: 0;
-    left: -25px;
-    width: 50px;
+    /* left: -25px; */
+    /* width: 50px; */
     height: 100%;
     background: currentColor;
     clip-path: polygon(50% 0%, 100% 98%, 0% 98%);
     transform-origin: center top;
-    transform: rotate(0.1deg);
+    /* transform: rotate(0.1deg); */
+    width: calc((3.1416 * var(--wheel-size)) / var(--pocket-count));
+    left: 50%;
+    transform: translateX(-50%) rotate(0.1deg);
   }
 
   .pocket-number {
@@ -195,7 +209,6 @@ button:focus-visible {
     transform: translate(-50%, -50%) rotate(180deg);
     color: white;
     font-weight: bold;
-    font-size: 22px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     z-index: 2;
     white-space: nowrap;
@@ -398,15 +411,15 @@ button:focus-visible {
 
   @keyframes highlight-pocket {
     0% {
-      transform: scale(1);
+      /* transform: scale(1); */
       filter: brightness(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0));
     }
     50% {
-      transform: scale(1.2);
+      /* transform: scale(1.2); */
       filter: brightness(2) drop-shadow(0 0 15px rgba(255, 255, 255, 0.9));
     }
     100% {
-      transform: scale(1);
+      /* transform: scale(1); */
       filter: brightness(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0));
     }
   }
@@ -440,32 +453,32 @@ button:focus-visible {
 
   @keyframes highlight-pocket-red {
     0% {
-      transform: scale(1);
+      /* transform: scale(1); */
       filter: brightness(1) drop-shadow(0 0 0px rgba(255, 0, 0, 0));
     }
     50% {
-      transform: scale(1.2);
+      /* transform: scale(1.2); */
       filter: brightness(1.5) drop-shadow(0 0 20px rgba(255, 0, 0, 0.9));
     }
     100% {
-      transform: scale(1);
+      /* transform: scale(1); */
       filter: brightness(1) drop-shadow(0 0 0px rgba(255, 0, 0, 0));
     }
   }
 
   @keyframes highlight-pocket-black {
     0% {
-      transform: scale(1);
+      /* transform: scale(1); */
       filter: brightness(1) drop-shadow(0 0 0px rgba(128, 128, 128, 0));
       background-color: #171717;
     }
     50% {
-      transform: scale(1.2);
+      /* transform: scale(1.2); */
       filter: brightness(2) drop-shadow(0 0 20px rgba(192, 192, 192, 0.9));
       background-color: #2a2a2a;
     }
     100% {
-      transform: scale(1);
+      /* transform: scale(1); */
       filter: brightness(1) drop-shadow(0 0 0px rgba(128, 128, 128, 0));
       background-color: #171717;
     }
@@ -473,15 +486,15 @@ button:focus-visible {
 
   @keyframes highlight-pocket-green {
     0% {
-      transform: scale(1);
+      /* transform: scale(1); */
       filter: brightness(1) drop-shadow(0 0 0px rgba(0, 255, 0, 0));
     }
     50% {
-      transform: scale(1.2);
+      /* transform: scale(1.2); */
       filter: brightness(1.5) drop-shadow(0 0 20px rgba(0, 255, 0, 0.9));
     }
     100% {
-      transform: scale(1);
+      /* transform: scale(1); */
       filter: brightness(1) drop-shadow(0 0 0px rgba(0, 255, 0, 0));
     }
   }
