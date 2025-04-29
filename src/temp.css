@@ -1,0 +1,568 @@
+@import "tailwindcss/preflight";
+@import "tailwindcss/utilities";
+
+:root {
+  /* --wheel-size: min(50vw, 450px); */
+  --pocket-count: 38;
+  --pocket-angle: calc(360deg / var(--pocket-count));
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background: linear-gradient(135deg, #1a1a2e 0%, #455a94 100%);
+  background-repeat: no-repeat;
+  /* background-size: cover; */
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  width: 100vw;
+  min-height: 100vh;
+  background: radial-gradient(
+      circle at 10% 20%,
+      rgba(97, 84, 11, 0.05) 0%,
+      transparent 20%
+    ),
+    radial-gradient(
+      circle at 90% 80%,
+      rgba(255, 215, 0, 0.05) 0%,
+      transparent 20%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(123, 118, 90, 0.05) 0%,
+      transparent 50%
+    ),
+    linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+@layer utilities {
+  @media (max-width: 500px) {
+    .wheel-container {
+      width: 100%;
+      aspect-ratio: 1/1;
+    }
+
+    .center-circle {
+      font-size: 1rem;
+    }
+    .pocket-number {
+      font-size: 0.8rem;
+    }
+  }
+
+  @media (min-width: 750px) {
+    .wheel-container {
+      width: 100%;
+      aspect-ratio: 1/1;
+    }
+
+    .center-circle {
+      font-size: 2.5rem;
+    }
+
+    .pocket-number {
+      font-size: 0.9rem;
+    }
+
+    .pocket-segment {
+      width: 12%;
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .wheel-container {
+      width: 65%;
+      aspect-ratio: 1/1;
+    }
+
+    .center-circle {
+      font-size: 2.5rem;
+    }
+
+    .pocket-number {
+      font-size: 20px;
+    }
+
+    .pocket-segment {
+      width: 15%;
+    }
+  }
+
+  .wheel-container {
+    aspect-ratio: 1;
+    margin: 2rem auto;
+    position: relative;
+    background: #1a1a1a;
+    border-radius: 50%;
+    padding: 20px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+    overflow: visible;
+  }
+
+  .wheel {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    position: relative;
+    background: #1a1a1a;
+    overflow: hidden;
+    border: 15px solid #1a1a1a;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.6), 0 0 0 10px #cdafaf;
+  }
+
+  .center-circle {
+    position: absolute;
+    width: 25%;
+    height: 25%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1a1a1a;
+    border-radius: 50%;
+    border: 8px solid #c0c0c0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffd700;
+    font-weight: medium;
+    text-shadow: 0 0 5px #ffd700, 0 0 20px #b8860b;
+    letter-spacing: 0.05em;
+    text-align: center;
+  }
+
+  .pocket {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 50%;
+    transform-origin: 50% 0;
+  }
+
+  .pocket-segment {
+    position: absolute;
+    top: 0;
+    /* left: -25px; */
+    /* width: 50px; */
+    height: 100%;
+    background: currentColor;
+    clip-path: polygon(50% 0%, 100% 98%, 0% 98%);
+    transform-origin: center top;
+    /* transform: rotate(0.1deg); */
+
+    left: 50%;
+    transform: translateX(-50%) rotate(0.1deg); /* center the segment */
+    width: 15%; /* try 10-15% and adjust */
+    min-width: 8px; /* optional: prevent too thin on small screens */
+    max-width: 50px;
+  }
+
+  .pocket-number {
+    position: absolute;
+    top: 85%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(180deg);
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    z-index: 2;
+    white-space: nowrap;
+  }
+
+  .pocket.red .pocket-segment {
+    background-color: #dc2626;
+  }
+
+  .pocket.black .pocket-segment {
+    background-color: #171717;
+  }
+
+  .pocket.green .pocket-segment {
+    background-color: #15803d;
+  }
+
+  .ball {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: radial-gradient(
+      circle at 25% 25%,
+      #ffed8b 0%,
+      #d5ab16 50%,
+      #8b7200 100%
+    );
+    border-radius: 50%;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5), 0 0 10px rgba(255, 215, 0, 0.3);
+    z-index: 4;
+
+    /* Create 3D effect with pseudo-elements */
+    &::before {
+      content: "";
+      position: absolute;
+      width: 40%;
+      height: 40%;
+      top: 20%;
+      left: 20%;
+      background: radial-gradient(
+        circle at center,
+        rgba(255, 255, 255, 0.9) 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        transparent 100%
+      );
+      border-radius: 50%;
+      transform: rotate(-45deg);
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: radial-gradient(
+        circle at 75% 75%,
+        transparent 50%,
+        rgba(0, 0, 0, 0.4) 100%
+      );
+      border-radius: 50%;
+    }
+
+    /* Add subtle animation */
+    animation: float 2s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translate(-50%, -50%);
+    }
+    50% {
+      transform: translate(-50%, -45%);
+    }
+  }
+
+  .spinner {
+    position: absolute;
+    top: 50%;
+    left: -70%;
+    transform: translateY(-50%) rotate(90deg);
+    width: 80%;
+    height: 12px;
+    background: linear-gradient(to right, #1a1a2e, #2a2a3a);
+    border-radius: 8px;
+    user-select: none;
+    touch-action: none;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5),
+      0 2px 4px rgba(255, 215, 0, 0.3), 0 0 15px rgba(255, 215, 0, 0.2);
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    padding: 2px;
+  }
+
+  .spinner::before {
+    content: "";
+    position: absolute;
+    top: -15px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #ffd700;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  }
+
+  .spinner-track {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #ffd700 0%, #ffed4a 50%, #ffd700 100%);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.6), 0 0 20px rgba(255, 215, 0, 0.3),
+      inset 0 1px 2px rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 215, 0, 0.6);
+  }
+
+  .spinner-knob {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 28px;
+    height: 28px;
+    background: radial-gradient(
+      circle at 30% 30%,
+      #fff4b6,
+      #ffd700 30%,
+      #b8860b 90%
+    );
+    border-radius: 50%;
+    cursor: grab;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 10px rgba(255, 215, 0, 0.6),
+      0 0 20px rgba(255, 215, 0, 0.3), inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+      inset 0 2px 4px rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(255, 215, 0, 0.8);
+    z-index: 5;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+
+  .spinner-knob:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.7),
+      0 0 30px rgba(255, 215, 0, 0.4), inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+      inset 0 2px 4px rgba(255, 255, 255, 0.8);
+  }
+
+  .spinner-knob:active {
+    cursor: grabbing;
+    transform: translate(-50%, -50%) scale(0.95);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 10px rgba(255, 215, 0, 0.5),
+      inset 0 -1px 3px rgba(0, 0, 0, 0.3),
+      inset 0 1px 3px rgba(255, 255, 255, 0.6);
+  }
+
+  .spinner.disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .spinner.disabled .spinner-knob {
+    background: radial-gradient(circle at 30% 30%, #a0a0a0, #808080);
+    border-color: rgba(160, 160, 160, 0.8);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 0 8px rgba(0, 0, 0, 0.1);
+    cursor: not-allowed;
+  }
+
+  /* Outer decorative ring */
+  .wheel::after {
+    content: "";
+    position: absolute;
+    width: calc(100% + 30px);
+    height: calc(100% + 30px);
+    top: -15px;
+    left: -15px;
+    border-radius: 50%;
+    background: repeating-conic-gradient(
+      from 0deg,
+      #c0c0c0 0deg 5deg,
+      #1a1a1a 5deg 10deg
+    );
+    z-index: -1;
+  }
+
+  .pocket.winner .pocket-segment {
+    animation: highlight-pocket 0.8s ease-out;
+    z-index: 2;
+  }
+
+  .pocket.winner .pocket-number {
+    animation: highlight-number 0.8s ease-out;
+    z-index: 3;
+  }
+
+  @keyframes highlight-pocket {
+    0% {
+      transform: scale(1);
+      filter: brightness(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+    }
+    50% {
+      transform: scale(1.2);
+      filter: brightness(2) drop-shadow(0 0 15px rgba(255, 255, 255, 0.9));
+    }
+    100% {
+      transform: scale(1);
+      filter: brightness(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+    }
+  }
+
+  @keyframes highlight-number {
+    0% {
+      transform: translate(-50%, -50%) rotate(180deg) scale(1);
+      text-shadow: 0 0 0px rgba(255, 255, 255, 0);
+    }
+    50% {
+      transform: translate(-50%, -50%) rotate(180deg) scale(1.3);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 1);
+    }
+    100% {
+      transform: translate(-50%, -50%) rotate(180deg) scale(1);
+      text-shadow: 0 0 0px rgba(255, 255, 255, 0);
+    }
+  }
+
+  .pocket.red.winner .pocket-segment {
+    animation: highlight-pocket-red 0.8s ease-out;
+  }
+
+  .pocket.black.winner .pocket-segment {
+    animation: highlight-pocket-black 0.8s ease-out;
+  }
+
+  .pocket.green.winner .pocket-segment {
+    animation: highlight-pocket-green 0.8s ease-out;
+  }
+
+  @keyframes highlight-pocket-red {
+    0% {
+      transform: scale(1);
+      filter: brightness(1) drop-shadow(0 0 0px rgba(255, 0, 0, 0));
+    }
+    50% {
+      transform: scale(1.2);
+      filter: brightness(1.5) drop-shadow(0 0 20px rgba(255, 0, 0, 0.9));
+    }
+    100% {
+      transform: scale(1);
+      filter: brightness(1) drop-shadow(0 0 0px rgba(255, 0, 0, 0));
+    }
+  }
+
+  @keyframes highlight-pocket-black {
+    0% {
+      transform: scale(1);
+      filter: brightness(1) drop-shadow(0 0 0px rgba(128, 128, 128, 0));
+      background-color: #171717;
+    }
+    50% {
+      transform: scale(1.2);
+      filter: brightness(2) drop-shadow(0 0 20px rgba(192, 192, 192, 0.9));
+      background-color: #2a2a2a;
+    }
+    100% {
+      transform: scale(1);
+      filter: brightness(1) drop-shadow(0 0 0px rgba(128, 128, 128, 0));
+      background-color: #171717;
+    }
+  }
+
+  @keyframes highlight-pocket-green {
+    0% {
+      transform: scale(1);
+      filter: brightness(1) drop-shadow(0 0 0px rgba(0, 255, 0, 0));
+    }
+    50% {
+      transform: scale(1.2);
+      filter: brightness(1.5) drop-shadow(0 0 20px rgba(0, 255, 0, 0.9));
+    }
+    100% {
+      transform: scale(1);
+      filter: brightness(1) drop-shadow(0 0 0px rgba(0, 255, 0, 0));
+    }
+  }
+}
+
+.casino-title {
+  font-family: "Times New Roman", serif;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #ffd700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.3),
+    0 0 30px rgba(255, 215, 0, 0.2), 2px 2px 2px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(
+    to bottom,
+    #fff6d5 0%,
+    #ffd700 25%,
+    #b8860b 50%,
+    #ffd700 75%,
+    #fff6d5 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+  padding: 0.5em 0;
+}
+
+.casino-title::before,
+.casino-title::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    #ffd700 20%,
+    #ffd700 80%,
+    transparent
+  );
+}
+
+.casino-title::before {
+  top: 0;
+}
+
+.casino-title::after {
+  bottom: 0;
+}
